@@ -1,57 +1,46 @@
-import React from "react";
-import { createStackNavigator } from "@react-navigation/stack";
+import React, { useState, useEffect, useContext } from "react";
+
 import { NavigationContainer } from "@react-navigation/native";
-import { View, Text, Button } from "react-native";
+import { Text, ActivityIndicator } from "react-native";
 import { Center } from "./Center";
-import { AuthParamList, AuthNavProps } from "./AuthParamList";
+
+import { AuthContext } from "./AuthProvider";
+import { AppTabs } from "./AppTabs";
+import { AuthStack } from "./AuthStack";
 
 interface RoutesProps {}
 
-const Stack = createStackNavigator<AuthParamList>();
-
-function Login({ navigation }: any) {
-  return (
-    <Center>
-      <Text>I am a login screen</Text>
-      <Button
-        title="go to register"
-        onPress={() => navigation.navigate("Register")}
-      />
-    </Center>
-  );
-}
-
-function Register({ navigation, route }: AuthNavProps<"Register">) {
-  return (
-    <Center>
-      <Text>route name = {route.name}</Text>
-      <Button
-        title="go to login"
-        onPress={() => navigation.navigate("Login")}
-      />
-    </Center>
-  );
-}
-
 export const Routes: React.FC<RoutesProps> = ({}) => {
+  const { user } = useContext(AuthContext);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    //check if user is logged in or not - logic
+    // AsyncStorage.getItem("user")
+    //   .then((userStr) => {
+    //     console.log(userStr);
+    //   if(user String) {
+    //      login();
+    //}
+    //  setLoading(false);
+    //   })
+    //   .catch((err) => {
+    //     console.error(err);
+    //   });
+    setLoading(false);
+  });
+
+  if (loading) {
+    return (
+      <Center>
+        <ActivityIndicator size="large" />
+        <Text>Loading...</Text>
+      </Center>
+    );
+  }
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login">
-        <Stack.Screen
-          name="Login"
-          options={{
-            headerTitle: "Sign In",
-          }}
-          component={Login}
-        />
-        <Stack.Screen
-          name="Register"
-          options={{
-            headerTitle: "Sign Up",
-          }}
-          component={Register}
-        />
-      </Stack.Navigator>
+      {user ? <AppTabs /> : <AuthStack />}
     </NavigationContainer>
   );
 };

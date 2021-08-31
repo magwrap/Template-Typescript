@@ -1,3 +1,3 @@
-import { Routes } from "./PracticeApp/Routes";
+import { Providers } from "./PracticeApp/Providers";
 
-export default Routes;
+export default Providers;
